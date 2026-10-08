@@ -41,6 +41,13 @@ For each new upload, raise `versionCode` (1, 2, 3…) and `versionName` in `andr
 - Data safety form: the app stores the user's data on the phone only
 - Content rating questionnaire and target audience
 
+## Automatic cloud build (no installs needed)
+Every push to `main` builds the app on GitHub (Actions tab → "Build Android app"):
+- **Test APK** (`christmas-together-test-apk-N`) — install on your phone to test.
+- **Signed Play Store AAB** (`christmas-together-playstore-aab-N`) — built once the 4 signing secrets are added in Settings › Secrets and variables › Actions: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`.
+
+The build number becomes the `versionCode` automatically; `versionName` comes from `package.json`. You can also start a build by hand with **Run workflow**.
+
 ## Files
 - `www/index.html` — the app
 - `capacitor.config.json` — app ID, name, splash colours
