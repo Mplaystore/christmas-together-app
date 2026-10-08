@@ -49,23 +49,50 @@ jobs:
           name: christmas-together-test-apk-${{ github.run_number }}
           path: android/app/build/outputs/apk/debug/*.apk
 
-      - name: Build signed release AAB (for Google Play)
+      - name: Check signing secrets
         if: env.HAS_KEY == 'true'
-        working-directory: android
         env:
           KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
-          ./gradlew bundleRelease --no-daemon --stacktrace
+          # Strip spaces / line breaks that sneak in when pasting
+          KS_PASS=$(printf '%s' "$KS_PASS" | tr -d '[:space:]')
+          KEY_PASS=$(printf '%s' "$KEY_PASS" | tr -d '[:space:]')
+          KEY_ALIAS=$(printf '%s' "$KEY_ALIAS" | tr -d '[:space:]')
+          echo "::add-mask::$KS_PASS"; echo "::add-mask::$KEY_PASS"
+          printf '%s' "$KS_B64" | tr -d '[:space:]' | base64 -d > "$RUNNER_TEMP/sign.jks" 2>/dev/null \
+            || { echo "::error title=Secret ANDROID_KEYSTORE_BASE64::Could not decode it - copy the whole long line again"; exit 1; }
+          SIZE=$(stat -c %s "$RUNNER_TEMP/sign.jks"); FP=$(sha256sum "$RUNNER_TEMP/sign.jks" | cut -c1-16)
+          if [ "$FP" != "3c96318ece04a5d6" ]; then echo "::error title=Secret ANDROID_KEYSTORE_BASE64::Decoded file does not match the key (size $SIZE bytes, expected 2680) - copy the whole long line again"; exit 1; fi
+          echo "::notice title=Keystore::ANDROID_KEYSTORE_BASE64 is correct"
+          keytool -list -keystore "$RUNNER_TEMP/sign.jks" -storepass "$KS_PASS" >/dev/null 2>&1 \
+            || { echo "::error title=Secret ANDROID_KEYSTORE_PASSWORD::Password is wrong - paste it again"; exit 1; }
+          echo "::notice title=Password::ANDROID_KEYSTORE_PASSWORD is correct"
+          keytool -list -keystore "$RUNNER_TEMP/sign.jks" -storepass "$KS_PASS" -alias "$KEY_ALIAS" >/dev/null 2>&1 \
+            || { echo "::error title=Secret ANDROID_KEY_ALIAS::Alias not found in the key - it should be the single word from the file"; exit 1; }
+          [ "$KEY_PASS" = "$KS_PASS" ] \
+            || { echo "::error title=Secret ANDROID_KEY_PASSWORD::Must be the same password as ANDROID_KEYSTORE_PASSWORD - paste it again"; exit 1; }
+          echo "::notice title=Signing secrets::All 4 secrets are correct"
+          { echo "KS_PASS_CLEAN=$KS_PASS"; echo "KEY_ALIAS_CLEAN=$KEY_ALIAS"; } >> "$GITHUB_ENV"
+
+      - name: Build release AAB
+        if: env.HAS_KEY == 'true'
+        working-directory: android
+        run: ./gradlew bundleRelease --no-daemon --stacktrace
+
+      - name: Sign release AAB (for Google Play)
+        if: env.HAS_KEY == 'true'
+        working-directory: android
+        run: |
           AAB=app/build/outputs/bundle/release/app-release.aab
           jarsigner -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore "$RUNNER_TEMP/upload.jks" -storepass "$KS_PASS" -keypass "$KEY_PASS" \
-            "$AAB" "$KEY_ALIAS"
+            -keystore "$RUNNER_TEMP/sign.jks" -storepass "$KS_PASS_CLEAN" -keypass "$KS_PASS_CLEAN" \
+            "$AAB" "$KEY_ALIAS_CLEAN"
           jarsigner -verify "$AAB" | tail -1
-          rm -f "$RUNNER_TEMP/upload.jks"
+          rm -f "$RUNNER_TEMP/sign.jks"
+          echo "::notice title=Play Store file::Signed AAB is ready - download it below"
 
       - uses: actions/upload-artifact@v5
         if: env.HAS_KEY == 'true'
