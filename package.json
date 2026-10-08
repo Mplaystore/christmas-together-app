@@ -1,0 +1,24 @@
+{
+  "name": "christmas-together",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Christmas Together 2026 - Android app (Capacitor)",
+  "scripts": {
+    "setup": "npx cap add android && npx capacitor-assets generate --android && npx cap sync android",
+    "sync": "npx cap sync android",
+    "icons": "npx capacitor-assets generate --android",
+    "open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/browser": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/filesystem": "^8.0.0",
+    "@capacitor/share": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.0.0"
+  }
+}

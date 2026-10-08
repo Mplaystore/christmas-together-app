@@ -1,0 +1,16 @@
+{
+  "appId": "ph.christmastogether.app",
+  "appName": "Christmas Together",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#14432F"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#14432F",
+      "showSpinner": false
+    }
+  }
+}
