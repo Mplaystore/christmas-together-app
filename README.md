@@ -50,6 +50,11 @@ Every push to `main` builds the app on GitHub (Actions tab → "Build Android ap
 
 The build number becomes the `versionCode` automatically; `versionName` comes from `package.json`. You can also start a build by hand with **Run workflow**.
 
+## Store listing
+- `store/play-store-listing.txt` — app name, short and full description
+- `store/feature-graphic-1024x500.png` — Play Store feature graphic
+- `PRIVACY.md` — privacy policy (also `docs/privacy.html` for GitHub Pages)
+
 ## Files
 - `www/index.html` — the app
 - `capacitor.config.json` — app ID, name, splash colours
