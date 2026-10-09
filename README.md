@@ -3,7 +3,7 @@
 [![Build Android app](https://github.com/Mplaystore/christmas-together-app/actions/workflows/android.yml/badge.svg)](https://github.com/Mplaystore/christmas-together-app/actions/workflows/android.yml)
 
 Capacitor 8 wrapper around the Christmas Together web app (`www/index.html`).
-App ID: `ph.christmastogether.app` · Version 1.0.0
+App ID: `christmas.together` · Version 1.0.0
 
 ## What you need (Windows)
 - Node.js 22 or newer

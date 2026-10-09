@@ -335,7 +335,7 @@ function daysTo(d){return Math.round((midnight(d) - midnight(new Date())) / 864e
 function todayISO(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function prettyDate(iso){if(!iso)return'';const [y,m,d]=iso.split('-').map(Number);return `${MONTHS[m-1]} ${d}, ${y}`}
 function dayMonth(iso){if(!iso)return'';const [,m,d]=iso.split('-').map(Number);return `${MONTHS[m-1]} ${d}`}
-const PLAY = 'https://play.google.com/store/apps/details?id=ph.christmastogether.app';
+const PLAY = 'https://play.google.com/store/apps/details?id=christmas.together';
 
 /* ---------- Helpers ---------- */
 const $ = s => document.querySelector(s);

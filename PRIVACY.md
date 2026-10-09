@@ -1,7 +1,7 @@
 # Privacy Policy — Christmas Together 2026
 
 **Effective date:** October 9, 2026<br>
-**App:** Christmas Together 2026 (Android, package `ph.christmastogether.app`)<br>
+**App:** Christmas Together 2026 (Android, package `christmas.together`)<br>
 **Developer:** Mplaystore
 
 Christmas Together is built so that your Christmas stays yours. You don't create an account, and we don't run ads, analytics or tracking.
