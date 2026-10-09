@@ -53,6 +53,8 @@ The build number becomes the `versionCode` automatically; `versionName` comes fr
 ## Store listing
 - `store/play-store-listing.txt` — app name, short and full description
 - `store/feature-graphic-1024x500.png` — Play Store feature graphic
+- `store/app-icon-512.png` — Play Store app icon (512×512, 32-bit PNG)
+- `store/screenshots/` — 7 phone screenshots (1080×1920)
 - `PRIVACY.md` — privacy policy (also `docs/privacy.html` for GitHub Pages)
 
 ## Files
