@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -100,3 +100,14 @@ jobs:
         with:
           name: christmas-together-playstore-aab-${{ github.run_number }}
           path: android/app/build/outputs/bundle/release/app-release.aab
+
+      - name: Publish signed AAB as a GitHub release
+        if: env.HAS_KEY == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VN=$(node -p "require('./package.json').version")
+          cp android/app/build/outputs/bundle/release/app-release.aab "christmas-together-${VN}-build${{ github.run_number }}.aab"
+          gh release create "build-${{ github.run_number }}" "christmas-together-${VN}-build${{ github.run_number }}.aab" \
+            --title "Christmas Together ${VN} (build ${{ github.run_number }})" \
+            --notes "Signed Android App Bundle for Google Play. versionCode ${{ github.run_number }}." --prerelease
